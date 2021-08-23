@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ServHTTPSimples:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ServHTTPSimples_jar</output-path>
+    <root id="archive" name="ServHTTPSimples.jar">
+      <element id="module-output" name="ServHTTPSimples" />
+    </root>
+  </artifact>
+</component>
