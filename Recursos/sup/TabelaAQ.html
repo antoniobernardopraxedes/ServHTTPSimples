@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<head>
+  <title>Supervisao Agua Quente</title> 
+  
+  <style> 
+    table, th, td {border: 1px solid black; padding: 3px; border-collapse: collapse; background-color: #f1f1c1;}
+  </style>
+  <meta charset="UTF-8">
+  <meta name="description" content="Programa de Apresentação para Agua Quente">
+  <meta name="keywords" content="HTML,CSS,XML,JavaScript">
+  <meta name="author" content="Antonio Bernardo Praxedes">
+ 
+</head> 
+
+<body> 
+		             
+  <table>
+	
+	<tr><!-- Linha 00 --> 
+      <td colspan="3" align="center">Supervisão Água Quente</td>
+    </tr>
+    
+    <tr><!-- Linha 01 --> 
+      <td colspan="2">Conexão Servidor</td>
+      <td align="center" id="comsrv">-----</td>
+    </tr>
+	       
+    <tr><!-- Linha 02 -->
+      <td colspan="2">Conexão UTR</td>
+      <td align="center" id="estuaq">-----</td>
+    </tr>
+		
+    <tr><!-- Linha 11 -->
+      <td colspan="2">Estado da Bomba</td>
+      <td align="center" id="estbaq">-----</td>
+    </tr>
+    
+    <tr><!-- Linha 12 -->
+      <td colspan="2">Estado do Aquecedor</td>
+      <td align="center" id="estaq">-----</td>
+    </tr>
+    
+    <tr><!-- Linha 15 -->
+      <td colspan="2">Temperatura do Boiler</td>
+      <td align="center" id="tempbl">-----</td>
+    </tr>
+		        
+    <tr><!-- Linha 16 -->
+      <td colspan="2">Temperatura da Placa Solar</td>
+      <td align="center" id="tempps">-----</td>
+    </tr>
+         	        
+    <tr><!-- Linha 17 -->
+      <td colspan="2">Tempo Bomba Ligada</td>
+      <td align="center" id="tmpbl">-----</td>
+    </tr>
+ 		        	        
+    <tr><!-- Linha 18 -->
+      <td colspan="2">Tempo Bomba Desligada</td>
+      <td align="center" id="tmpbd">-----</td>
+    </tr>
+	 
+    <!--<tr>
+      <td align="center"> <button type="button" onclick="AutoRefresh()">Auto Refresh</button></td>
+      <td align="center"> <button type="button" onclick="Portao()">Portao</button></td>
+      <td align="center"> <button type="button" onclick="LuzTorre()">Luz da Torre</button></td>
+    </tr>-->
+	
+  </table> 
+		
+  
+  <script type="text/javascript">
+    //***********************************************************************************************************************
+    //                                                                                                                      *
+    //                                            Programa Principal Javascript                                             *
+    //                                                                                                                      *
+    //***********************************************************************************************************************
+    //
+    //src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    var toggle = 0;               // Inicia a variavel de mudanca entre os modos de autorefresh ligado e desligado
+    loadXMLDoc("local001.xml");   // Solicita os valores de todas as variaveis de supervisao de agua quente
+    document.body.style.zoom="300%";
+    AutoRefresh();
+  
+  
+    //Fim da Area de Programa Principal Javascript e Inicio da Area de Funcoes Javascript
+ 
+ 
+    //***********************************************************************************************************************
+    //                                                                                                                      *
+    // Nome da Funcao Javascript: Atualiza                                                                                  *
+    //                                                                                                                      *
+    // Função: faz a atualizacao de todas as variaveis de supervisao                                                        *
+    //                                                                                                                      *
+    // Entrada: nao tem                                                                                                     *
+    //                                                                                                                      *
+    //***********************************************************************************************************************
+    //	   
+    function Atualiza() {
+    
+      loadXMLDoc();
+      if (toggle == 0) {
+        document.getElementById("cmdex").innerHTML = "Atualiza";
+      }
+      
+    } // Fim da Rotina Atualiza
+    
+ 
+    //***********************************************************************************************************************
+    //                                                                                                                      *
+    // Nome da Funcao Javascript: AutoRefresh                                                                               *
+    //                                                                                                                      *
+    // Função: faz a atualizacao automatica de todas as variaveis de supervisao                                             *
+    //                                                                                                                      *
+    // Entrada: variavel global toggle que sinaliza os estados da atualizacao automatica                                    *
+    //                                                                                                                      *
+    //***********************************************************************************************************************
+    //	   
+    function AutoRefresh() {
+    
+      if (toggle == 0) {
+        t = setInterval(loadXMLDoc, 2000);
+        toggle = 1;
+        document.getElementById("cmdex").innerHTML = "Comando Auto Refresh Ligado";
+      } else {
+	    clearInterval(t);
+	    toggle = 0;
+	    document.getElementById("cmdex").innerHTML = "Comando Auto Refresh Desligado";
+	  }
+    } // Fim da Rotina AutoRefresh
+    
+    
+    //***********************************************************************************************************************
+    //                                                                                                                      *
+    // Nome da Funcao Javascript: Portao()                                                                                  *
+    //                                                                                                                      *
+    // Função: envia o comando de abrir ou fechar o portao da chacara                                                       *
+    //                                                                                                                      *
+    // Entrada: nao tem                                                                                                     *
+    //                                                                                                                      *
+    //***********************************************************************************************************************
+    //	   
+    function Portao() {
+      var AlertaPortao = "Antes de executar o comando, verifique se voce esta vendo o portao.";
+      alert(AlertaPortao);
+      loadXMLDoc("cmd=0030");
+      document.getElementById("cmdex").innerHTML = "Abre ou Fecha o Portao";
+      
+    } // Fim da Rotina Portao()
+    
+    
+    //***********************************************************************************************************************
+    //                                                                                                                      *
+    // Nome da Funcao Javascript: LuzTorre()                                                                                *
+    //                                                                                                                      *
+    // Função: envia o comando de ligar ou desligar a luz da torre                                                          *
+    //                                                                                                                      *
+    // Entrada: nao tem                                                                                                     *
+    //                                                                                                                      *
+    //***********************************************************************************************************************
+    //	   
+    function LuzTorre() {
+    
+      loadXMLDoc("cmd=0031");
+      document.getElementById("cmdex").innerHTML = "Liga/Desl a Luz da Torre";
+      
+    } // Fim da Rotina LuzTorre()
+    
+    
+    //***********************************************************************************************************************
+    //                                                                                                                      *
+    // Nome da Funcao Javascript: loadXMLDoc()                                                                              *
+    //                                                                                                                      *
+    // Função: solicita ao Servidor um Recurso pelo Metodo GET. A resposta do servidor eh sempre o arquivo XML com o valor  *
+    //         atualizado de todas as variaveis de supervisao                                                               *
+    //                                                                                                                      *
+    // Entrada: String com o nome do Recurso. Se nao for inserida a string com o nome do recurso (valor = undefined),       *
+    //          solicita apenas a atualizacao dos valores das variaveis.                                                    *
+    //                                                                                                                      *
+    //***********************************************************************************************************************
+    //	   
+    function loadXMLDoc(recurso) { 
+  	
+      if (recurso == undefined) {
+        recurso = "local001.xml";
+      }
+  	
+      var xhttp = new XMLHttpRequest();
+      xhttp.open("GET", recurso, false);
+      
+      try {
+        xhttp.send();   
+						 
+        if (xhttp.status != 200) { 
+          //alert(`Error ${xhttp.status}: ${xhttp.statusText}`);
+          document.getElementById("comsrv").innerHTML = "Falha";
+          document.getElementById("comsrv").style.color = "red";
+        } 
+        else {                               // Se foi lido corretamente um arquivo HTTP formato XML,
+          document.getElementById("comsrv").innerHTML = "Normal";
+          document.getElementById("comsrv").style.color = "blue";
+          var xmlRec = xhttp.responseXML;    // Carrega na variavel xmlRec o arquivo XML Recebido do Servidor
+	  CarregaVariaveis_AQ(xmlRec);       // Carrega as Variaveis de Água lidas do Arquivo XML Recebido
+	} // else if (xhttp.status != 200) {
+      } catch(err) {
+        //alert(`Error ${xhttp.status}: ${xhttp.statusText}`);
+        document.getElementById("comsrv").innerHTML = "Falha";
+        document.getElementById("comsrv").style.color = "red";
+        CarregaVariaveis_Erro();
+      }
+    } // Fim da Funcao loadXMLDoc(recurso)
+    
+    
+    //***********************************************************************************************************************
+    //                                                                                                                      *
+    // Nome da Funcao Javascript: CarregaVariaveis_GERAL                                                                    *
+    //                                                                                                                      *
+    // Função: carrega na tabela de apresentacao HTML os valores das variaveis lidas do arquivo XML recebidas do servidor   *
+    //                                                                                                                      *
+    // Entrada: variavel com o arquivo XML recebido do Servidor                                                             *
+    //                                                                                                                      *
+    //***********************************************************************************************************************
+    //	   
+    function CarregaVariaveis_GERAL(ArqVarXML) { 
+      var i = 0;
+      var geral = ArqVarXML.getElementsByTagName("GERAL");
+      valor = geral[i].getElementsByTagName("COMCNC")[0].childNodes[0].nodeValue;
+      document.getElementById("comcnc").innerHTML = valor;
+      document.getElementById("comcnc").style.color = CorFonte1(valor);
+      
+      valor = geral[i].getElementsByTagName("COMUTR")[0].childNodes[0].nodeValue;
+      document.getElementById("comutr").innerHTML = valor;
+      document.getElementById("comutr").style.color = CorFonte1(valor);
+      
+      valor = geral[i].getElementsByTagName("CLK")[0].childNodes[0].nodeValue;
+      document.getElementById("clk").innerHTML = valor;
+      
+      
+      valor = geral[i].getElementsByTagName("DATA")[0].childNodes[0].nodeValue;
+      document.getElementById("data").innerHTML = valor;
+      valor = geral[i].getElementsByTagName("ENCG1")[0].childNodes[0].nodeValue;
+      document.getElementById("encg1").innerHTML = valor;
+      valor = geral[i].getElementsByTagName("ENCG2")[0].childNodes[0].nodeValue;
+      document.getElementById("encg2").innerHTML = valor;
+      valor = geral[i].getElementsByTagName("VREDE")[0].childNodes[0].nodeValue;
+      document.getElementById("vrede").innerHTML = valor;
+      valor = geral[i].getElementsByTagName("ESTVRD")[0].childNodes[0].nodeValue;
+      document.getElementById("estvrd").innerHTML = valor;
+    
+    } // Fim da Rotina CarregaVariaveis_GERAL
+    
+    
+    //***********************************************************************************************************************
+    //                                                                                                                      *
+    // Nome da Funcao Javascript: CarregaVariaveis_AGUA                                                                     *
+    //                                                                                                                      *
+    // Função: solicita o arquivo XML com as variaveis de supervisao AGUA do Local LOCAL001                                 *
+    //                                                                                                                      *
+    // Entrada: variavel com o arquivo XML recebido do Servidor                                                             *
+    //                                                                                                                      *
+    //***********************************************************************************************************************
+    //	   
+    function CarregaVariaveis_AGUA(ArqVarXML) { 
+      var i = 0;
+      var agua = ArqVarXML.getElementsByTagName("AGUA");
+      valor = agua[i].getElementsByTagName("ESTCXAZ")[0].childNodes[0].nodeValue;
+      document.getElementById("estcxaz").innerHTML = valor;
+      valor = agua[i].getElementsByTagName("NIVCXAZ")[0].childNodes[0].nodeValue;
+      document.getElementById("nivcxaz").innerHTML = valor;
+      valor = agua[i].getElementsByTagName("ESTBMB")[0].childNodes[0].nodeValue;
+      document.getElementById("estbmb").innerHTML = valor;
+      valor = agua[i].getElementsByTagName("ESTDJB")[0].childNodes[0].nodeValue;
+      document.getElementById("estdjb").innerHTML = valor;
+      valor = agua[i].getElementsByTagName("ESTDJRB")[0].childNodes[0].nodeValue;
+      document.getElementById("estdjrb").innerHTML = valor;
+      valor = agua[i].getElementsByTagName("ENBMB")[0].childNodes[0].nodeValue;
+      document.getElementById("enbmb").innerHTML = valor;
+      valor = agua[i].getElementsByTagName("TMPBL")[0].childNodes[0].nodeValue;
+      document.getElementById("tmpbl").innerHTML = valor;
+      
+    } // Fim da Rotina CarregaVariaveis_AGUA
+
+    //***********************************************************************************************************************
+    //                                                                                                                      *
+    // Nome da Funcao Javascript: CarregaVariaveis_AQ                                                                       *
+    //                                                                                                                      *
+    // Função: solicita o arquivo XML com as variaveis de supervisao de agua quente                                         *
+    //                                                                                                                      *
+    // Entrada: variavel com o arquivo XML recebido do Servidor                                                             *
+    //                                                                                                                      *
+    //***********************************************************************************************************************
+    //	   
+    function CarregaVariaveis_AQ(ArqVarXML) { 
+      var i = 0;
+      var aguaq = ArqVarXML.getElementsByTagName("AGUAQ");
+      valor = aguaq[i].getElementsByTagName("ESTUAQ")[0].childNodes[0].nodeValue;
+      document.getElementById("estuaq").innerHTML = valor;
+      document.getElementById("estuaq").style.color = CorFonte1(valor);
+      valor = aguaq[i].getElementsByTagName("ESTBAQ")[0].childNodes[0].nodeValue;
+      document.getElementById("estbaq").innerHTML = valor;
+      valor = aguaq[i].getElementsByTagName("ESTAQ")[0].childNodes[0].nodeValue;
+      document.getElementById("estaq").innerHTML = valor;
+      valor = aguaq[i].getElementsByTagName("TEMPBL")[0].childNodes[0].nodeValue;
+      document.getElementById("tempbl").innerHTML = valor;
+      valor = aguaq[i].getElementsByTagName("TEMPPS")[0].childNodes[0].nodeValue;
+      document.getElementById("tempps").innerHTML = valor;
+      valor = aguaq[i].getElementsByTagName("TMPBL")[0].childNodes[0].nodeValue;
+      document.getElementById("tmpbl").innerHTML = valor;
+      valor = aguaq[i].getElementsByTagName("TMPBD")[0].childNodes[0].nodeValue;
+      document.getElementById("tmpbd").innerHTML = valor;
+    
+    } // Fim da Rotina CarregaVariaveis_AGUA
+    
+    function CarregaVariaveis_Erro() {
+      
+      valor = "---------";
+      document.getElementById("estuaq").innerHTML = valor;
+      document.getElementById("estbaq").innerHTML = valor;
+      document.getElementById("estaq").innerHTML = valor;
+      document.getElementById("tempbl").innerHTML = valor;
+      document.getElementById("tempps").innerHTML = valor;
+      document.getElementById("tmpbl").innerHTML = valor;
+      document.getElementById("tmpbd").innerHTML = valor;
+
+    }
+
+
+    function CorFonte1(val) {
+    
+      if (val == "Normal") {
+        return("blue");
+      }
+      else {
+        return("red");
+      }
+    }
+
+  </script> 
+	    
+</body>
+</html>

@@ -1,0 +1,194 @@
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK CapEnergia
+
+  // Definir as Variáveis de Entrada
+  VAR_INPUT
+    Ve   : REAL;  // Ve = Tensão de Entrada
+    Vs   : REAL;  // Vs = Tensão de Saída
+    We   : REAL;  // We = Potência de Entrada
+    Ws   : REAL;  // Ws = Potência de Saída
+    Ei   : REAL;  // Ei = Eficiência do Inversor
+    Td   : REAL;  // Td = Temperatura dos Dissipadores
+    Tt   : REAL;  // Tt = Temperatura do Transformador
+    IL12 : REAL;  // IL12 = Intensidade de Luz Solar nos Paineis 1 e 2
+    IL34 : REAL;  // IL12 = Intensidade de Luz Solar nos Paineis 3 e 4
+    Wcc1 : REAL;  // Wcc1 = Potência de Saída do Controlador de Carga 1
+    Wcc2 : REAL;  // Wcc2 = Potência de Saída do Controlador de Carga 2
+  END_VAR
+
+  // Definir as Variáveis de Saída
+  VAR_OUTPUT
+    EstresseInversor : REAL;
+    SaudeInversor : REAL;
+    Ventilacao : REAL;
+  END_VAR
+
+  // Fuzzificar a variável de entrada Ve = Tensão de Entrada
+  FUZZIFY Ve
+    TERM MuitoBaixa := (0, 1) (21, 1) (22.5, 0);
+    TERM Baixa := (21, 0) (22.5, 1) (24, 0);
+    TERM Normal := (22.5, 0) (24, 1) (28, 1) (29, 0); 
+    TERM Alta := (28, 0) (29, 1) (30, 1);
+  END_FUZZIFY
+
+  // Fuzzificar a variável de entrada Vs = Tensão de Saída
+  FUZZIFY Vs
+    TERM MuitoBaixa := (0, 1) (176, 1) (198, 0) ;
+    TERM Baixa := (176, 0) (198, 1) (220, 0) ;
+    TERM Normal := (198, 0) (220, 1) (242, 0) ; 
+    TERM Alta := (220, 0) (242, 1);
+  END_FUZZIFY
+
+
+  // Fuzzificar a variável de entrada We = Potencia de Entrada
+  FUZZIFY We
+    TERM Baixa := (0, 1) (75, 1) (225, 0);
+    TERM Media := (75, 0) (225, 1) (375, 0); 
+    TERM Alta := (225, 0) (375, 1) (525, 0);
+    TERM MuitoAlta := (375, 0) (525, 1) (600, 1);
+  END_FUZZIFY
+
+  // Fuzzificar a variável de entrada Ws = Potencia de Saida
+  FUZZIFY Ws
+    TERM Baixa := (0, 1) (55, 1) (165, 0);
+    TERM Media := (55, 0) (165, 1) (275, 0); 
+    TERM Alta := (165, 0) (275, 1) (385, 0);
+    TERM MuitoAlta := (275, 0) (385, 1) (440, 1);
+  END_FUZZIFY
+
+  // Fuzzificar a variável de entrada Ei = Eficiência do Inversor
+  FUZZIFY Ei
+    TERM Baixa := (0, 1) (60, 1) (70, 0); 
+    TERM Media := (65, 0) (70, 1) (75, 0);
+    TERM Normal := (70, 0) (75, 1) (80, 1);
+  END_FUZZIFY
+
+  // Fuzzificar a variável de entrada Td = Temperatura dos Dissipadores
+  FUZZIFY Td
+    TERM Baixa := (0, 1) (30, 1) (40, 0);
+    TERM Normal := (30, 0) (40, 1) (50, 0); 
+    TERM Alta := (40, 0) (50, 1) (60, 0);
+    TERM MuitoAlta := (50, 0) (60, 1) (70, 1);
+  END_FUZZIFY
+
+  // Fuzzificar a variável de entrada Tt = Temperatura do Transformador
+  FUZZIFY Tt
+    TERM Baixa := (0, 1) (32.5, 1) (42.5, 0);
+    TERM Normal := (32.5, 0) (42.5, 1) (52.5, 0); 
+    TERM Alta := (42.5, 0) (52.5, 1) (62.5, 0);
+    TERM MuitoAlta := (52.5, 0) (62.5, 1) (72.5, 1);
+  END_FUZZIFY
+
+  // Fuzzificar a variável de entrada IL12 = Intensidade de Luz Solar nos Paineis 1 e 2
+  FUZZIFY IL12
+    TERM MuitoBaixo := (0, 1) (20, 1) (40, 0);
+    TERM Baixo := (20, 0) (40, 1) (60, 0);
+    TERM Medio := (40, 0) (60, 1) (80, 0);
+    TERM Alto := (60, 0) (80, 1) (100,1);
+  END_FUZZIFY
+ 
+  // Fuzzificar a variável de entrada IL34 = Intensidade de Luz Solar nos Paineis 3 e 4
+  FUZZIFY IL34
+    TERM MuitoBaixo := (0, 1) (20, 1) (40, 0);
+    TERM Baixo := (20, 0) (40, 1) (60, 0);
+    TERM Medio := (40, 0) (60, 1) (80, 0);
+    TERM Alto := (60, 0) (80, 1) (100,1);
+  END_FUZZIFY
+
+  // Fuzzificar a variável de entrada Wcc1 = Potência de Saída do Controlador de Carga 1
+  FUZZIFY Wcc1
+    TERM MuitoBaixa := (0, 1) (20, 1) (40, 0);
+    TERM Baixa := (20, 0) (40, 1) (60, 0);
+    TERM Media := (40, 0) (60, 1) (80, 0);
+    TERM Alta := (60, 0) (80, 1) (100,1);
+  END_FUZZIFY
+
+   // Fuzzificar a variável de entrada Wcc1 = Potência de Saída do Controlador de Carga 2
+  FUZZIFY Wcc2
+    TERM MuitoBaixa := (0, 1) (20, 1) (40, 0);
+    TERM Baixa := (20, 0) (40, 1) (60, 0);
+    TERM Media := (40, 0) (60, 1) (80, 0);
+    TERM Alta := (60, 0) (80, 1) (100,1);
+  END_FUZZIFY
+
+
+  // Defuzzify a variável de saída 'EstresseInversor'
+  DEFUZZIFY EstresseInversor
+    TERM Baixo := (0, 1) (20, 1) (40, 0);
+    TERM Medio := (20, 0) (40, 1) (60, 0);
+    TERM Alto := (40, 0) (60, 1) (80, 0);
+    TERM MuitoAlto := (60, 0) (80, 1) (100,1);
+
+  // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+  // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+
+  END_DEFUZZIFY
+
+  // Defuzzify output variable 'SaudeInversor'
+  DEFUZZIFY SaudeInversor
+    TERM Critica := (0, 1) (20, 1) (40, 0);
+    TERM Alerta := (20, 0) (40, 1) (60, 0);
+    TERM Atencao := (40, 0) (60, 1) (80, 0);
+    TERM Normal := (60, 0) (80, 1) (100,1);
+ 
+  // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+  // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 0;
+
+  END_DEFUZZIFY
+
+  RULEBLOCK Regras1
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE  1 : IF Td IS Baixa OR Tt IS Baixa OR Ws IS Baixa
+                THEN EstresseInversor IS Baixo;
+
+    RULE  2 : IF Td IS Normal OR Tt IS Normal OR Ws IS Media
+                THEN EstresseInversor IS Medio;
+
+    RULE  3 : IF Td IS Alta OR Tt IS Alta OR Ws IS Alta
+                THEN EstresseInversor IS Alto;
+  
+    RULE  4 : IF Td IS MuitoAlta OR Tt IS MuitoAlta OR Ws IS MuitoAlta
+                THEN EstresseInversor IS MuitoAlto;
+   
+    // Regras para SaudeInversor = Critica
+    RULE  5 : IF ((Ei IS Baixa) OR (Td IS MuitoAlta) OR (Tt IS MuitoAlta))
+                THEN SaudeInversor IS Critica;
+    
+    // Regras para SaudeInversor = Alerta
+    RULE  6 : IF ((Ws IS Baixa) OR (Ws IS Media)) AND (Ei IS Media) AND ((Td IS Alta) OR (Tt IS Alta))
+                THEN SaudeInversor IS Alerta;
+
+    // Regras para SaudeInversor = Atencao
+    RULE  3 : IF (Ws IS Media) AND (Ei IS Media) AND ((Td IS Alta) OR (Tt IS Alta))
+                THEN SaudeInversor IS Atencao;
+
+    RULE  3 : IF (Ws IS MuitoAlta) AND ((Td IS Alta) OR (Tt IS Alta))
+                THEN SaudeInversor IS Atencao;
+
+    // Regras para SaudeInversor = Normal
+    RULE  7 : IF (Ws IS Baixa) AND (Ei IS Normal) AND ((Td IS Normal) OR (Tt IS Normal))
+                THEN SaudeInversor IS Normal;
+
+    RULE  8 : IF (Ws IS Media) AND (Ei IS Normal) AND ((Td IS Normal) OR (Tt IS Normal))
+                THEN SaudeInversor IS Normal;
+
+    RULE  9 : IF (Ws IS Alta) AND (Ei IS Normal) AND ((Td IS Normal) OR (Tt IS Normal) OR (Td IS Alta) OR (Tt IS Alta))
+                THEN SaudeInversor IS Normal;
+
+    RULE  10 : IF (Ws IS MuitoAlta) AND (Ei IS Normal) AND ((Td IS Normal) AND (Tt IS Normal))
+                THEN SaudeInversor IS Normal;
+    
+  END_RULEBLOCK
+
+END_FUNCTION_BLOCK

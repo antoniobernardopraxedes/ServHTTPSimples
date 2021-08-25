@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<head>
+  <title>Supervisao e Controle Água, Energia e Usina Solar</title> 
+  <meta charset="UTF-8">
+  <meta name="description" content="Página para Supervisão e Controle">
+  <meta name="keywords" content="HTML,CSS,XML,JavaScript">
+  <meta name="author" content="Antonio Bernardo Praxedes">
+	<link rel="stylesheet" href="style.css">
+</head> 
+
+<body>
+  <table>
+	  <tr class="linha" ><!-- Linha 01 --> 
+      <td colspan="2">Conexão Servidor</td>
+      <td align="center" id="comsrv">-----</td>
+      <td colspan="2">Conexão Concentrador</td>
+      <td align="center" id="comcnc">-----</td>
+      <td colspan="2">Conexão UTR</td>
+      <td align="center" id="comutr">-----</td>
+      <td> <button type="button" onclick="loadXMLDoc('cmd=0004')" class="botao">Operação Normal</button></td>
+    </tr>
+    
+    <tr class="linha"><!-- Linha 02 --> 
+      <td colspan="2">Conexão C. Carga 1</td>
+      <td align="center" id="comcc1"></td>
+      <td colspan="2">Conexão C. Carga 2</td>
+	  <td align="center" id="comcc2">-----</td>
+      <td>Hora UTR:</td>
+	  <td align="center" id="data">-----</td>
+	  <td align="center" id="clk">-----</td>
+      <td> <button type="button" onclick="loadXMLDoc('cmd=0003')" class="botao">Operação Economia</button></td>
+    </tr>
+    
+    <tr class="linha"><!-- Linha 03 -->
+	  <td colspan="3" id="cmdex"></td>
+	  <td colspan="2">Temperatura Baterias</td>
+	  <td align="center" id="tbat" >-----</td>
+	  <td colspan="2">Estado do Inversor 2</td>
+	  <td align="center" id="estiv2">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0016')" class="botao">Modo Manual Carga 1</button></td>
+	</tr>
+		        	        
+	<tr class="linha"><!-- Linha 04 -->
+	  <td colspan="2">Tensão Barramento</td>
+    <td align="center" id="vbat">-----</td>
+	  <td colspan="2">Saúde Baterias</td>
+	  <td align="center" id="sdbat">-----</td>
+	  <td colspan="2">Corrente Entrada Inv2</td>
+	  <td align="center" id="ieiv2">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0017')" class="botao">Modo Auto Carga 1</button></td>
+    </tr>
+        
+	<tr class="linha"><!-- Linha 05 -->
+	  <td>Tensão Rede</td>
+      <td align="center" id="estvrd">-----</td>
+      <td align="center" id="vrede">-----</td>
+	  <td colspan="2">Tensão Paineis 1 e 2</td>
+	  <td align="center" id="vp12">-----</td>
+	  <td colspan="2">Potência Entrada Inv2</td>
+	  <td align="center" id="weiv2">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0005')" class="botao">Modo Manual 234</button></td>
+    </tr>
+    
+	<tr class="linha"><!-- Linha 06 -->
+	  <td colspan="2">Modo de Operação</td>
+	  <td align="center" id="mdop">-----</td>
+	  <td colspan="2">Corrente Painéis 1 e 2</td>
+	  <td align="center" id="is12">-----</td>
+	  <td colspan="2">Tensão Saida Inv2</td>
+	  <td align="center" id="vsiv2">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0006')" class="botao">Modo Auto 234</button></td>
+	</tr>
+		        
+	<tr class="linha"><!-- Linha 07 -->
+	  <td colspan="2">Modo de Comando</td>
+	  <td align="center" id="mdcom">-----</td>
+	  <td colspan="2">Corrente Saida CC1</td>
+	  <td align="center" id="iscc1">-----</td>
+	  <td colspan="2">Corrente Saida Inv2</td>
+	  <td align="center" id="isiv2">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0002')" class="botao">Acerta Relógio</button></td>
+	</tr>
+	
+	<tr class="linha"><!-- Linha 08 -->
+	  <td colspan="2">Modo Controle 1</td>
+	  <td align="center" id="mdct1">-----</td>
+	  <td colspan="2">Potência Saida CC1</td>
+	  <td align="center" id="wscc1">-----</td>
+	  <td colspan="2">Potência Saida Inv2</td>
+	  <td align="center" id="wsiv2">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0015')" class="botao">Apaga Indicadores</button></td>
+	</tr>
+	
+	<tr class="linha"><!-- Linha 09 -->
+	  <td colspan="2">Modo Controle 234</td>
+	  <td align="center" id="mdct234">-----</td>
+	  <td colspan="2">Saúde CC1</td>
+	  <td align="center" id="sdcc1">-----</td>
+	  <td colspan="2">Temperatura Driver Inv2</td>
+	  <td align="center" id="tdiv2">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0007')" class="botao">Habilita Carga 1</button></td>
+	</tr>
+	
+	<tr class="linha"><!-- Linha 10 -->
+	  <td colspan="2">Energia Carga 1</td>
+	  <td align="center" id="encg1">-----</td>
+	  <td colspan="2">Tensão Painéis 3 e 4</td>
+	  <td align="center" id="vp34">-----</td>
+	  <td colspan="2">Temperatura Trafo Inv2</td>
+	  <td align="center" id="ttiv2">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0008')" class="botao">Desabilita Carga 1</button></td>
+	</tr>
+	
+	<tr class="linha"><!-- Linha 11 -->
+	  <td colspan="2">Energia Carga 2</td>
+	 <td align="center" id="encg2">-----</td>
+	  <td colspan="2">Corrente Painéis 3 e 4</td>
+	  <td align="center" id="is34">-----</td>
+	  <td colspan="2">Eficiencia Inversor 2</td>
+	  <td align="center" id="efiv2">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0009')" class="botao">Habilita Carga 2</button></td>
+    </tr>
+
+	<tr class="linha"><!-- Linha 12 -->
+	  <td colspan="2">Energia Carga 3</td>
+	  <td align="center" id="encg3">-----</td>
+	  <td colspan="2">Corrente Saida CC2</td>
+	  <td align="center" id="iscc2">-----</td>
+	  <td colspan="2">Saúde Inversor 2</td>
+	  <td align="center" id="sdiv2">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0010')" class="botao">Desabilita Carga 2</button></td>
+    </tr>
+    
+	<tr class="linha"><!-- Linha 13 -->
+	 <td colspan="2">Corrente Carga 3</td>
+	  <td align="center" id="icg3">-----</td>
+	 <td colspan="2">Potência Saida CC2</td>
+	 <td align="center" id="wscc2">-----</td>
+	 <td colspan="2">Estado do Inversor 1</td>
+	 <td align="center" id="estiv1">-----</td>
+	 <td> <button type="button" onclick="loadXMLDoc('cmd=0011')" class="botao">Habilita Carga 3</button></td>
+    </tr>
+    
+	<tr class="linha"><!-- Linha 14 -->
+	  <td colspan="2">Estado da Caixa Azul</td>
+	  <td align="center" id="estcxaz">-----</td>
+	  <td colspan="2">Saúde CC2</td>
+	  <td align="center" id="sdcc2">-----</td>
+	  <td colspan="2">Corrente Entrada Inv1</td>
+	  <td align="center" id="ieiv1">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0012')" class="botao">Desabilita Carga 3</button></td>
+    </tr>
+		        	        
+	<tr class="linha"><!-- Linha 15 -->
+	  <td colspan="2">Nível da Caixa Azul</td>
+	  <td align="center" id="nivcxaz">-----</td>
+	  <td colspan="2">Corrente Total Gerada</td>
+	  <td align="center" id="itotger">-----</td>
+	  <td colspan="2">Potência Entrada Inv1</td>
+	  <td align="center" id="weiv1">-----</td>
+	  <td> <button type="button" onclick="loadXMLDoc('cmd=0013')" class="botao">Habilita Carga 4</button></td>
+	</tr>
+		        
+	<tr class="linha"><!-- Linha 16 -->
+	  <td colspan="2">Estado da Bomba</td>
+	  <td align="center" id="estbmb">-----</td>
+	  <td colspan="2">Potência Total Gerada</td>
+	  <td align="center" id="wtotger">-----</td>
+	  <td colspan="2">Tensão Saida Inv1</td>
+	  <td align="center" id="vsiv1">-----</td>
+	  <td><button type="button" onclick="loadXMLDoc('cmd=0014')" class="botao">Desabilita Carga 4</button></td>
+	</tr>
+		        
+	<tr class="linha"><!-- Linha 17 -->
+	  <td colspan="2">Disjuntor da Bóia</td>
+	  <td align="center" id="estdjb">-----</td>
+	  <td colspan="2">Corrente Total Cargas</td>
+	  <td align="center" id="itotcg">-----</td>
+	  <td colspan="2">Corrente Saida Inv1</td>
+	  <td align="center" id="isiv1">-----</td>
+	  <td><button type="button" class="botao">Reservado</button></td>
+    </tr>
+         	        
+	<tr class="linha"><!-- Linha 18 -->
+	  <td colspan="2">Disjuntor Rede Bomba</td>
+	  <td align="center" id="estdjrb">-----</td>
+	  <td colspan="2">Potência Total Cargas</td>
+	  <td align="center" id="wtotcg">-----</td>
+	  <td colspan="2">Potência Saida Inv1</td>
+	  <td align="center" id="wsiv1">-----</td>
+	  <td><button type="button" class="botao">Reservado</button></td>
+ 	</tr>
+ 		        	        
+	<tr class="linha"><!-- Linha 19 -->
+	  <td colspan="2">Energia Bomba</td>
+	<td align="center" id="enbmb">-----</td>
+	  <td colspan="2">Estado Fonte CC1</td>
+	  <td align="center" id="estft1">-----</td>
+	  <td colspan="2">Temperatura Driver Inv1</td>
+	  <td align="center" id="tdiv1" >-----</td>
+	  <td><button type="button" class="botao">Reservado</button></td>
+	</tr>
+		        	        
+	<tr class="linha"><!-- Linha 20 -->
+ 	  <td colspan="2">Tempo Bomba Ligada</td>
+	  <td align="center" id="tmpbl">-----</td>
+	  <td colspan="2">Estado Fonte CC2</td>
+	  <td align="center" id="estft2">-----</td>
+	  <td colspan="2">Temperatura Trafo Inv1</td>
+	  <td align="center" id="ttiv1" >-----</td>
+	  <td><button type="button" class="botao">Reservado</button></td>
+	</tr>
+		        	        
+	<tr class="linha"><!-- Linha 21 -->
+	<td colspan="2">Hora Bomba Ligou</td>
+	<td align="center">-----</td>
+	<td colspan="2">Corrente Cargas 24Vcc</td>
+	<td align="center" id="icircc">-----</td>
+	<td colspan="2">Eficiência Inversor 1</td>
+	<td align="center" id="efiv1">-----</td>
+	<td><button type="button" class="botao">Reservado</button></td>
+	</tr>
+		                
+	<tr class="linha"><!-- Linha 22 -->
+	  <td colspan="2">Hora Bomba Desligou</td>
+	  <td align="center">-----</td>
+	  <td colspan="2">Potência Cargas 24Vcc</td>
+	  <td align="center" id="wcircc">-----</td>
+	  <td colspan="2">Saúde Inversor 1</td>
+	  <td align="center" id="sdiv1">-----</td>
+	  <td><button type="button" class="botao">Reservado</button></td>
+	</tr>
+	
+	<tr class="linha"><!-- Linha 22 -->
+	<td colspan="10" id="erro">
+	</tr>
+	<script type="text/javascript" src="tabelasupjs.js"></script> 
+  </table> 
+    	    
+</body>
+</html>

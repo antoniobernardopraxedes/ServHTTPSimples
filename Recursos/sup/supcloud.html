@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+	<head>
+		<title>Supervisao Remota</title> 
+		<meta charset="UTF-8">
+		<meta name="description" content="Página de Supervisão e Controle">
+		<meta name="keywords" content="HTML,CSS,XML,JavaScript">
+		<meta name="author" content="Antonio Bernardo Praxedes">
+		<link rel="stylesheet" href="../sup/supcloud.css">
+		<script type="text/javascript" defer src="../sup/supcloud.js"></script> 
+	</head> 
+	<body>
+		<table>
+			<tr class="linha"><!-- Linha 01 --> 
+		    <td colspan="2">Conexão Servidor</td>
+		    <td align="center" id="comsrv">-----</td>
+		    <td colspan="2">Conexão Concentrador</td>
+		    <td align="center" id="comcnc">-----</td>
+		    <td colspan="2">Conexão UTR</td>
+		    <td align="center" id="comutr">-----</td>
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0004')" class="botao">
+					Operação Normal
+				</button>
+			</td>
+		  </tr>
+    
+		  <tr class="linha"><!-- Linha 02 --> 
+		    <td colspan="2">Conexão Atualizador</td>
+		    <td align="center" id="comcnv"></td>
+		    <td colspan="2">Conexão C. Carga 2</td>
+			<td align="center" id="comcc2">-----</td>
+		    <td>Hora UTR:</td>
+			<td align="center" id="data">-----</td>
+			<td align="center" id="clk">-----</td>
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0003')" class="botao">
+					Operação Economia
+				</button>
+			</td>
+		</tr>
+    
+		<tr class="linha"><!-- Linha 03 -->
+			<td colspan="2">Conexão C. Carga 1</td>
+			<td align="center" id="comcc1">-----</td>
+			<td colspan="2">Temperatura Baterias</td>
+			<td align="center" id="tbat" >-----</td>
+			<td colspan="2">Estado do Inversor 2</td>
+			<td align="center" id="estiv2">-----</td>
+			 <td>
+				<button type="button" onclick="loadXMLDoc('cmd=0016')" class="botao">
+					Modo Manual Carga 1
+				</button>
+			 </td>
+		</tr>
+		        	        
+		<tr class="linha">                                    <!-- Linha 04                            -->
+			<td colspan="3" id="cmdex">Modo Supervisão</td>   <!-- Cols 01/02 - Modo/Comando           -->
+			<td colspan="2">Tensão Paineis 1 e 2</td>         <!-- Col 3: Texto: Tensão Paineis 1 e 2  -->
+			<td align="center" id="vp12">-----</td>           <!-- Col 4: Valor: Tensão Paineis 1 e 2  -->
+			<td colspan="2">Corrente Entrada Inv2</td>        <!-- Col 5: Texto: Corrente Entrada Inv2 -->
+			<td align="center" id="ieiv2">-----</td>          <!-- Col 6: Valor: Corrente Entrada Inv2 -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0017')" class="botao">
+					Modo Auto Carga 1
+				</button>
+			</td>
+		</tr>
+        
+			<tr class="linha">                              <!-- Linha 05                                   -->
+			<td colspan="2">Tensão Barramento</td>          <!-- Col 01,02 - Texto:  Tensão Barramento      -->
+		    <td align="center" id="vbat">-----</td>         <!-- Col 03,04 - Valor:  Tensão Barramento      -->
+			<td colspan="2">Corrente Painéis 1 e 2</td>     <!-- Col 05,06 - Texto:  Corrente Painéis 1 e 2 -->
+			<td align="center" id="is12">-----</td>         <!-- Col 07,08 - Valor:  Corrente Painéis 1 e 2 -->
+			<td colspan="2">Potência Entrada Inv2</td>      <!-- Col 09,10 - Texto:  Potência Entrada Inv2  -->
+			<td align="center" id="weiv2">-----</td>        <!-- Col 11,12 - Valor:  Potência Entrada Inv2  -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0005')" class="botao">
+					Modo Manual 234
+				</button>
+			</td>
+		</tr>
+    
+		<tr class="linha">                                    <!-- Linha 06                               -->
+			<td>Tensão Rede</td>                              <!-- Col 01    - Texto:  Tensão Rede        -->
+		    <td align="center" id="estvrd">-----</td>         <!-- Col 02    - Estado: Tensão Rede        -->
+		    <td align="center" id="vrede">-----</td>          <!-- Col 03    - Valor:  Tensão Rede        -->
+			<td colspan="2">Corrente Saida CC1</td>           <!-- Col 04,05 - Texto:  Corrente Saida CC1 -->
+			<td align="center" id="iscc1">-----</td>          <!-- Col 06,07 - Valor:  Corrente Saida CC1 -->
+			<td colspan="2">Tensão Saida Inv2</td>            <!-- Col 08,09 - Texto:  Tensão Saida Inv2  -->
+			<td align="center" id="vsiv2">-----</td>          <!-- Col 10,11 - Valor:  Tensão Saida Inv2  -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0006')" class="botao">
+					Modo Auto 234
+				</button>
+			</td>
+		</tr>
+		        
+		<tr class="linha">                                    <!-- Linha 07                                -->
+			<td colspan="2">Modo de Operação</td>             <!-- Col 01,02 - Texto:  Modo de Operação    -->
+			<td align="center" id="mdop">-----</td>           <!-- Col 03,04 - Estado: Modo de Operação    -->
+			<td colspan="2">Potência Saida CC1</td>           <!-- Col 05,06 - Texto:  Potência Saida CC1  -->
+			<td align="center" id="wscc1">-----</td>          <!-- Col 07,08 - Valor:  Potência Saida CC1  -->
+			<td colspan="2">Corrente Saida Inv2</td>          <!-- Col 09,10 - Texto:  Corrente Saida Inv2 -->
+			<td align="center" id="isiv2">-----</td>          <!-- Col 11,12 - Valor:  Corrente Saida Inv2 -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0002')" class="botao">
+					Acerta Relógio
+				</button>
+			</td>
+		</tr>
+	
+		<tr class="linha">                                    <!-- Linha 08                                 -->
+			<td colspan="2">Modo de Comando</td>              <!-- Col 01,02 - Texto:  Modo de Comando      -->
+			<td align="center" id="mdcom">-----</td>          <!-- Col 03,04 - Estado: Modo de Comando      -->
+			<td colspan="2">Tensão Painéis 3 e 4</td>         <!-- Col 05,06 - Texto:  Tensão Painéis 3 e 4 -->
+			<td align="center" id="vp34">-----</td>           <!-- Col 07,08 - Valor:  Tensão Painéis 3 e 4 -->
+			<td colspan="2">Potência Saida Inv2</td>          <!-- Col 09,10 - Texto:  Potência Saida Inv2  -->
+			<td align="center" id="wsiv2">-----</td>          <!-- Col 11,12 - Valor:  Potência Saida Inv2  -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0015')" class="botao">
+					Apaga Indicadores
+				</button>
+			</td>
+		</tr>
+	
+		<tr class="linha">                                    <!-- Linha 09                                    -->
+			<td colspan="2">Modo Controle 1</td>              <!-- Col 01,02 - Texto:  Modo Controle 1         -->
+			<td align="center" id="mdct1">-----</td>          <!-- Col 03,04 - Estado: Modo Controle 1         -->
+			<td colspan="2">Corrente Painéis 3 e 4</td>       <!-- Col 05,06 - Texto:  Corrente Painéis 3 e 4  -->
+			<td align="center" id="is34">-----</td>           <!-- Col 07,08 - Valor:  Corrente Painéis 3 e 4  -->
+			<td colspan="2">Temperatura Driver Inv2</td>      <!-- Col 09,10 - Texto:  Temperatura Driver Inv2 -->
+			<td align="center" id="tdiv2">-----</td>          <!-- Col 11,12 - Valor:  Temperatura Driver Inv2 -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0007')" class="botao">
+					Habilita Carga 1
+				</button>
+			</td>
+		</tr>
+	
+		<tr class="linha">                                    <!-- Linha 10                                    -->
+			<td colspan="2">Modo Controle 234</td>            <!-- Col 01,02 - Texto:  Modo Controle 234       -->
+			<td align="center" id="mdct234">-----</td>        <!-- Col 03,04 - Estado: Modo Controle 234       -->
+			<td colspan="2">Corrente Saida CC2</td>           <!-- Col 05,06 - Texto:  Corrente Saída CC2      -->
+			<td align="center" id="iscc2">-----</td>          <!-- Col 07,08 - Valor:  Corrente Saida CC2      -->
+			<td colspan="2">Temperatura Trafo Inv2</td>       <!-- Col 09,10 - Texto:  Temperatura Driver Inv2 -->
+			<td align="center" id="ttiv2">-----</td>          <!-- Col 11,12 - Valor:  Temperatura Driver Inv2 -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0008')" class="botao">
+					Desabilita Carga 1
+				</button>
+			</td>
+		</tr>
+	
+		<tr class="linha">                                    <!-- Linha 11                                 -->
+			<td colspan="2">Energia Carga 1</td>              <!-- Col 01,02 - Texto:  Energia Carga 1      -->
+			<td align="center" id="encg1">-----</td>          <!-- Col 03,04 - Estado: Energia Carga 1      -->
+			<td colspan="2">Potência Saída CC2</td>           <!-- Col 05,06 - Texto:  Potência Saída CC2   -->
+			<td align="center" id="wscc2">-----</td>          <!-- Col 07,08 - Valor:  Potência Saida CC2   -->
+			<td colspan="2">Estado do Inversor 1</td>         <!-- Col 09,10 - Texto:  Estado do Inversor 1 -->
+			<td align="center" id="estiv1">-----</td>         <!-- Col 11,12 - Estado: Estado do Inversor 1 -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0009')" class="botao">
+					Habilita Carga 2
+				</button>
+			</td>
+		</tr>
+
+		<tr class="linha">                                    <!-- Linha 12                                   -->
+			<td colspan="2">Energia Carga 2</td>              <!-- Col 01,02 - Texto:  Energia Carga 2        -->
+			<td align="center" id="encg2">-----</td>          <!-- Col 03,04 - Estado: Energia Carga 2        -->
+			<td colspan="2">Corrente Total Gerada</td>        <!-- Col 05,06 - Texto:  Corrente Total Gerada  -->
+			<td align="center" id="itotger">-----</td>        <!-- Col 07,08 - Valor:  Corrente Total Gerada  -->
+			<td colspan="2">Corrente Entrada Inv 1</td>       <!-- Col 09,10 - Texto:  Corrente Entrada Inv 1 -->
+			<td align="center" id="ieiv1">-----</td>          <!-- Col 11,12 - Valor:  Corrente Entrada Inv 1 -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0010')" class="botao">
+					Desabilita Carga 2
+				</button>
+			</td>
+		</tr>
+    
+		<tr class="linha">                                    <!-- Linha 13                                   -->
+			<td colspan="2">Energia Carga 3</td>              <!-- Col 01,02 - Texto:  Energia Carga 3        -->
+			<td align="center" id="encg3">-----</td>          <!-- Col 03,04 - Estado: Energia Carga 3        -->
+			<td colspan="2">Potência Total Gerada</td>        <!-- Col 05,06 - Texto:  Potência Total Gerada  -->
+			<td align="center" id="wtotger">-----</td>        <!-- Col 07,08 - Valor:  Potência Total Gerada  -->
+			<td colspan="2">Potência Entrada Inv 1</td>       <!-- Col 09,10 - Texto:  Potência Entrada Inv 1 -->
+			<td align="center" id="weiv1">-----</td>          <!-- Col 11,12 - Valor:  Potência Entrada Inv 1 -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0011')" class="botao">
+					Habilita Carga 3
+				</button>
+			</td>
+		</tr>
+    
+		<tr class="linha">                                    <!-- Linha 14                                  -->
+			<td colspan="2">Corrente Carga 3</td>             <!-- Col 01,02 - Texto:  Corrente Carga 3      -->
+			<td align="center" id="icg3">-----</td>           <!-- Col 03,04 - Estado: Corrente Carga 3      -->
+			<td colspan="2">Corrente Total Cargas</td>        <!-- Col 05,06 - Texto:  Corrente Total Cargas -->
+			<td align="center" id="itotcg">-----</td>         <!-- Col 07,08 - Valor:  Corrente Total Cargas -->
+			<td colspan="2">Tensão Saída Inv 1</td>           <!-- Col 09,10 - Texto:  Tensão Saída Inv 1    -->
+			<td align="center" id="vsiv1">-----</td>          <!-- Col 11,12 - Valor:  Tensão Saída Inv 1    -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0012')" class="botao">
+					Desabilita Carga 3
+				</button>
+			</td>
+		</tr>
+		        	        
+		<tr class="linha">                                    <!-- Linha 15                                  -->
+			<td colspan="2">Estado da Caixa Azul</td>         <!-- Col 01,02 - Texto:  Estado da Caixa Azul  -->
+			<td align="center" id="estcxaz">-----</td>        <!-- Col 03,04 - Estado: Estado da Caixa Azul  -->
+			<td colspan="2">Potência Total Cargas</td>        <!-- Col 05,06 - Texto:  Potência Total Cargas -->
+			<td align="center" id="wtotcg">-----</td>         <!-- Col 07,08 - Valor:  Potência Total Cargas -->
+			<td colspan="2">Corrente Saída Inv 1</td>         <!-- Col 09,10 - Texto:  Corrente Saída Inv 1  -->
+			<td align="center" id="isiv1">-----</td>          <!-- Col 11,12 - Valor:  Corrente Saída Inv 1  -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0013')" class="botao">
+					Habilita Carga 4
+				</button>
+			</td>
+		</tr>
+		        
+		<tr class="linha">                                    <!-- Linha 16                                 -->
+			<td colspan="2">Nível da Caixa Azul</td>          <!-- Col 01,02 - Texto:  Nível da Caixa Azul  -->
+			<td align="center" id="nivcxaz">-----</td>        <!-- Col 03,04 - Estado: Nível da Caixa Azul  -->
+			<td colspan="2">Estado Fonte CC1</td>             <!-- Col 05,06 - Texto:  Estado Fonte CC1     -->
+			<td align="center" id="estft1">-----</td>         <!-- Col 07,08 - Estado: Estado Fonte CC1     -->
+			<td colspan="2">Potência Saída Inv 1</td>         <!-- Col 09,10 - Texto:  Potência Saída Inv 1 -->
+			<td align="center" id="wsiv1">-----</td>          <!-- Col 11,12 - Valor:  Potência Saída Inv 1 -->
+			<td>
+				<button type="button" onclick="loadXMLDoc('cmd=0014')" class="botao">
+					Desabilita Carga 4
+				</button>
+			</td>
+		</tr>
+		        
+		<tr class="linha">                                    <!-- Linha 17                                    -->
+			<td colspan="2">Estado da Bomba</td>              <!-- Col 01,02 - Texto:  Estado da Bomba         -->
+			<td align="center" id="estbmb">-----</td>         <!-- Col 03,04 - Estado: Estado da Bomba         -->
+			<td colspan="2">Estado Fonte CC2</td>             <!-- Col 05,06 - Texto:  Estado Fonte CC2        -->
+			<td align="center" id="estft2">-----</td>         <!-- Col 07,08 - Estado: Estado Fonte CC2        -->
+			<td colspan="2">Temperatura Driver Inv1</td>      <!-- Col 09,10 - Texto:  Temperatura Driver Inv1 -->
+			<td align="center" id="tdiv1">-----</td>          <!-- Col 11,12 - Valor:  Temperatura Driver Inv1 -->
+			<td>
+				<button type="button" class="botao">
+					Reservado
+				</button>
+			</td>
+	    </tr>
+         	        
+		<tr class="linha">                                    <!-- Linha 18                                   -->
+			<td colspan="2">Disjuntor da Bóia</td>            <!-- Col 01,02 - Texto:  Disjuntor da Bóia      -->
+			<td align="center" id="estdjb">-----</td>         <!-- Col 03,04 - Estado: Disjuntor da Bóia      -->
+			<td colspan="2">Corrente Cargas 24Vcc</td>        <!-- Col 05,06 - Texto:  Corrente Cargas 24Vcc  -->
+			<td align="center" id="icircc">-----</td>         <!-- Col 07,08 - Valor:  Corrente Cargas 24Vcc  -->
+			<td colspan="2">Temperatura Trafo Inv1</td>       <!-- Col 09,10 - Texto:  Temperatura Trafo Inv1 -->
+			<td align="center" id="ttiv1">-----</td>          <!-- Col 11,12 - Valor:  Temperatura Trafo Inv1 -->
+			<td>
+				<button type="button" class="botao">
+					Reservado
+				</button>
+			</td>
+		</tr>
+ 		        	        
+		<tr class="linha">                                    <!-- Linha 19                                  -->
+			<td colspan="2">Disjuntor Rede Bomba</td>         <!-- Col 01,02 - Texto:  Disjuntor Rede Bomba  -->
+			<td align="center" id="estdjrb">-----</td>        <!-- Col 03,04 - Estado: Disjuntor Rede Bomba  -->
+			<td colspan="2">Potência Cargas 24Vcc</td>        <!-- Col 05,06 - Texto:  Potência Cargas 24Vcc -->
+			<td align="center" id="wcircc">-----</td>         <!-- Col 07,08 - Valor:  Potência Cargas 24Vcc -->
+			<td colspan="2"></td>                             <!-- Col 09,10 - Texto:   -->
+			<td align="center"  >-----</td>                   <!-- Col 11,12 - Valor:   -->
+			<td>
+				<button type="button" class="botao">
+					Reservado
+				</button>
+			</td>
+		</tr>
+		        	        
+		<tr class="linha"><!-- Linha 20 -->
+			<td colspan="2">Energia Bomba</td>                <!-- Col 01,02 - Texto:  Energia Bomba -->
+			<td align="center" id="enbmb">-----</td>          <!-- Col 03,04 - Estado: Energia Bomba -->
+			<td colspan="2">Tempo Bomba Ligada</td>             <!-- Col 05,06 - Texto:  Tempo Bomba Lig. -->
+			<td align="center" id="tmpbl">-----</td>          <!-- Col 07,08 - Valor:  Tempo Bomba Lig. -->
+			<td colspan="2"></td>                             <!-- Col 09,10 - Texto:   -->
+			<td align="center"  >-----</td>                   <!-- Col 11,12 - Valor:   -->
+			<td>
+				<button type="button" class="botao">
+					Reservado
+				</button>
+			</td>
+		</tr>
+
+		<tr class="linha">                                    <!-- Linha 22 -->
+			<td colspan="10" id="erro"></td>                  <!-- Col 01 a 10 - Texto:  Erro -->
+		</tr>
+	</table> 
+  </body>
+</html>
