@@ -1,6 +1,8 @@
 package Package01;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Util {
@@ -25,24 +27,37 @@ public class Util {
         // 0123456789012345678
         // 0000000000111111111
 
+        LocalDateTime datahora = LocalDateTime.now();
+
+        int Dia = datahora.getDayOfMonth();
+        int Mes = datahora.getMonthValue();
+        int Ano = datahora.getYear();
+        int Anoc = Ano / 100;
+        int Anou = Ano - 100 * Anoc;
+
+        int Hora = datahora.getHour();
+        int Minuto = datahora.getMinute();
+        int Segundo = datahora.getSecond();
+
+
         byte DH [] = new byte[7];
 
-        int Dia = 10 * Character.digit(DataHora.charAt(0), 10) + Character.digit(DataHora.charAt(1), 10);
-        int Mes = 10 * Character.digit(DataHora.charAt(3), 10) + Character.digit(DataHora.charAt(4), 10);
-        int AnoCentenas = 10 * Character.digit(DataHora.charAt(6), 10) + Character.digit(DataHora.charAt(7), 10);
-        int AnoUnidades = 10 * Character.digit(DataHora.charAt(8), 10) + Character.digit(DataHora.charAt(9), 10);
+        //int Dia = 10 * Character.digit(DataHora.charAt(0), 10) + Character.digit(DataHora.charAt(1), 10);
+        //int Mes = 10 * Character.digit(DataHora.charAt(3), 10) + Character.digit(DataHora.charAt(4), 10);
+        //int Anoc = 10 * Character.digit(DataHora.charAt(6), 10) + Character.digit(DataHora.charAt(7), 10);
+        //int Anou = 10 * Character.digit(DataHora.charAt(8), 10) + Character.digit(DataHora.charAt(9), 10);
 
-        int Hora = 10 * Character.digit(DataHora.charAt(11), 10) + Character.digit(DataHora.charAt(12), 10);
-        int Minuto = 10 * Character.digit(DataHora.charAt(14), 10) + Character.digit(DataHora.charAt(15), 10);
-        int Segundo = 10 * Character.digit(DataHora.charAt(17), 10) + Character.digit(DataHora.charAt(18), 10);
+        //int Hora = 10 * Character.digit(DataHora.charAt(11), 10) + Character.digit(DataHora.charAt(12), 10);
+        //int Minuto = 10 * Character.digit(DataHora.charAt(14), 10) + Character.digit(DataHora.charAt(15), 10);
+        //int Segundo = 10 * Character.digit(DataHora.charAt(17), 10) + Character.digit(DataHora.charAt(18), 10);
 
         DH[0] = (byte)ByteLow(Hora);         // Hora
         DH[1] = (byte)ByteLow(Minuto);       // Minuto
         DH[2] = (byte)ByteLow(Segundo);      // Segundo
         DH[3] = (byte)ByteLow(Dia);          // Dia
         DH[4] = (byte)ByteLow(Mes);          // Mes
-        DH[5] = (byte)ByteLow(AnoUnidades);  // Ano (Unidades)
-        DH[6] = (byte)ByteLow(AnoCentenas);  // Ano (Centenas)
+        DH[5] = (byte)ByteLow(Anoc);  // Ano (Unidades)
+        DH[6] = (byte)ByteLow(Anou);  // Ano (Centenas)
 
         return(DH);
     }

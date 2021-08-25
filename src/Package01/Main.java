@@ -13,27 +13,29 @@ import java.util.StringTokenizer;
 
 //**********************************************************************************************************************
 //                                                                                                                     *
-//Autor: Antonio Bernardo de Vasconcellos Praxedes                                                                     *
+// Autor: Antonio Bernardo de Vasconcellos Praxedes                                                                    *
 //                                                                                                                     *
-//Data: 19/08/2021                                                                                                     *
+// Data: 19/08/2021                                                                                                    *
 //                                                                                                                     *
-//Nome da Classe: HTTPSrvCloud                                                                                         *
+// Nome da Classe: Main - Projeto ServHTTPSimples                                                                      *
 //                                                                                                                     *
-//Funcao: Programa Principal Servidor HTTP para ser instalado no Servidor em Nuvem                                     *
+// Funcao: Programa Principal Servidor HTTP para ser instalado no Servidor em Nuvem                                    *
 //                                                                                                                     *
 //**********************************************************************************************************************
 //
 public class Main implements Runnable {
 
-    static String MsgXML = "";
-    static int Porta = 8080;
-    private Socket connect;
-
     static boolean Verbose = true;
+    static boolean Local = false;  // true = Servidor roda na Nuvem / false = Servidor roda na Intranet
+    static String CaminhoNuvem = "/home/bernardo/Executavel/";               // Caminho no Computador na Nuvem
+    static String CaminhoLocal1 = "/home/antonio/Workspace/Cloud/";          // Caminho no Computador Dell Vostro
+    static String CaminhoLocal2 = "/home/antonio/ServHTTPSimples/Recursos/"; // Caminho no Computador Dell Inspiron
+    static String CaminhoLocal3 = "/home/pi/Desktop/Programas/";  // Caminho no Computador Raspberry PI 3 (oficina)
+    static int Porta = 8080;
+
     static String Caminho = "";
-    static String CaminhoNuvem = "/home/bernardo/Executavel/";
-    static String CaminhoLocal1 = "/home/antonio/Workspace/Cloud/";
-    static String CaminhoLocal2 = "/home/antonio/workspace/Cloud/";
+    static String MsgXML = "";
+    private Socket connect;
 
     public Main(Socket c) {
         connect = c;
@@ -55,24 +57,21 @@ public class Main implements Runnable {
         try {
             ServerSocket serverConnect = new ServerSocket(Porta);
             InetAddress ip = InetAddress.getLocalHost();
-            String NomeComputador;
-            NomeComputador = ip.getHostName();
+            String NomeComputador = ip.getHostName();
 
             if (NomeComputador.equals("antonio-Vostro1510")) {
                 Caminho = CaminhoLocal1;
-                Util.Terminal("Servidor Iniciado no Computador " + NomeComputador, false, true);
             }
             else {
                 if (NomeComputador.equals("BernardoLinux")) {
                     Caminho = CaminhoLocal2;
-                    Util.Terminal("Servidor Iniciado no Computador " + NomeComputador, false, true);
                 }
                 else {
                     Caminho = CaminhoNuvem;
-                    Util.Terminal("Servidor Iniciado no Computador na Nuvem" + Porta, false, true);
                 }
             }
 
+            Util.Terminal("Servidor Iniciado no Computador " + NomeComputador, true, true);
             Util.Terminal("Esperando por Conexoes na Porta: " + Porta, false, Verbose);
 
             do {    // Espera a conexão do cliente
@@ -307,14 +306,6 @@ public class Main implements Runnable {
             else {                    // Se não foi recebido um método válido,
                 Mensagem.EnvStringErro(connect, 501, Verbose);
             }
-
-		/*} catch (FileNotFoundException fnfe) {
-			try {
-				Util.Terminal("Arquivo não encontrado", false, Verbose);
-			} catch (IOException ioe) {
-				Util.Terminal("Erro na conexão: " + ioe.getMessage(), false, Verbose);
-			}*/
-
         } catch (IOException ioe) {
             Util.Terminal("Erro no Servidor: " + ioe, false, Verbose);
         } finally {
