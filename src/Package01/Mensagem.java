@@ -29,7 +29,7 @@ public class Mensagem {
     //static String ComRecHTTP;
     static boolean PrtMsg;
 
-    static int[] receiveData1 = new int[512];
+    //static int[] receiveData1 = new int[512];
     static int[] Med = new int[48];
     static int[] SD = new int[32];
 
@@ -853,7 +853,14 @@ public class Mensagem {
     //                                                                                                                 *
     //******************************************************************************************************************
     //
-    static void LeEstMedsPayload() {
+    static void LeEstMedsPayload(byte[] receiveData1) {
+
+        //int[] receiveData1 = new int[512];
+
+        //for (int i = 0; i < MsgBinRec.length; i++){
+            //    Mensagem.receiveData1[i] = ByteIn.read();
+        //    receiveData1[i] = MsgBinRec[i];
+        //}
 
         Hora = receiveData1[21];
         Minuto = receiveData1[22];
@@ -1201,7 +1208,7 @@ public class Mensagem {
 
             String MsgTerm = "Enviada Mensagem HTTP do tipo " + Tipo + " com " + TamMsg + " Caracteres";
             Util.Terminal(MsgTerm, false, Verbose);
-            System.out.println(Msg);
+            //System.out.println(Msg);
             return(true);
         }
         catch (IOException ioe) {

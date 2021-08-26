@@ -248,83 +248,68 @@ public class Main implements Runnable {
                 } // else if (Requisicao.equals("/") || Requisicao.equals("/?")) {
             }  // if (method.equals("GET"))
 
-            if (method.equals("POST")) {              // Se método = POST,
+            // Verifica se foi recebida mensagem POST binária de atualização (requisição = "atualiza")
+            if (method.equals("POST") && ArquivoReq.equals("atualiza")) {
                 RecMetodoValido = true;
+                RecReqValida = true;
 
-                // Verifica se foi recebida mensagem binária de atualização (requisição = "atualiza")
-                if (ArquivoReq.equals("atualiza")) {
-                    RecReqValida = true;
+                // Se é mensagem do tipo application/octet-stream, recebe os bytes e processa a mensagem
+                if (CabHTTP.contains("application/octet-stream")) {
+                    int TamCab = CabHTTP.length();
+                    int indice = CabHTTP.lastIndexOf("Content-Length:") + 15;
+                    StringTokenizer parseCabHTTP = new StringTokenizer(CabHTTP.substring(indice, TamCab));
+                    String TamMens = parseCabHTTP.nextToken();
 
-                    String TamMsg = "";     // TamMsg = string com o número de caracteres/bytes da mensagem
-                    String TipoMsg = "";    // TipoMsg = string com o tipo da mensagem (XML ou octet/stream"
-                    int TamanhoMsg = 0;     // TamanhoMensagem = inteiro com o número de caracteres/bytes da mensagem
-                    StringTokenizer parseLinha3 = new StringTokenizer(LinhaCab[2]); // Linha 3
-                    String IdLinha3 =  parseLinha3.nextToken().toLowerCase();       // IdLinha3 minúsculo deve ser "Content-Length:"
-                    StringTokenizer parseLinha4 = new StringTokenizer(LinhaCab[3]); // Linha 4
-                    String IdLinha4 = parseLinha4.nextToken().toLowerCase();        // IdLinha4 minúsculo deve ser "Content-Type:"
+                    // Lê a mensagem binária e carrega no array MsgBinRec
+                    int TamMensagem = Util.StringToInt(TamMens);
+                    byte [] MsgBinRec = new byte[TamMensagem];
+                    ByteIn.read(MsgBinRec, 0, TamMensagem);
 
-                    if (IdLinha3.equals("content-length:") && IdLinha4.equals("content-type:")) {
-                        TamMsg = parseLinha3.nextToken();
-                        TamanhoMsg = Util.StringToInt(TamMsg);
-                        TipoMsg = parseLinha4.nextToken().toLowerCase();
+                    // Se recebeu mensagem binária válida, sinaliza e carrega os dados nas variáveis
+                    boolean MsgBinOK = false;
+                    if ((MsgBinRec[0] == 0x60) && (MsgBinRec[1] == 0x45)) {
+                        MsgBinOK = true;
+                        Mensagem.LeEstMedsPayload(MsgBinRec);
+                        MsgTerm = "Recebida Msg Bin de Atualizacao com " + TamMensagem + " Bytes";
+                        Util.Terminal(MsgTerm, false, Verbose);
+                    }
 
-                        // Se é mensagem do tipo application/octet-stream, recebe os bytes e carrega no buffer
-                        if (TipoMsg.equals("application/octet-stream")) {
-                            for (int i = 0; i < TamanhoMsg; i++){
-                                Mensagem.receiveData1[i] = ByteIn.read();
-                            }
-                            int Byte0 = Mensagem.receiveData1[0];
-                            int Byte1 = Mensagem.receiveData1[1];
-                            boolean MsgBinOK = false;
+                    // Se a mensagem binária recebida do Concentrador é válida e se a comunicacao está OK,
+                    // monta a mensagem XML completa com os valores atualizados.
+                    if (MsgBinOK) {
+                        if (Mensagem.EstCom1 == 1) {
+                            MsgXML = Mensagem.XML01(ComRec) + " ";
+                        }
+                        else {  // Se não há comunicacao com o Concentrador, monta a mensagem XML de falha
+                            Mensagem.XML01Falha(1);
+                        }
 
-                            // Se recebeu mensagem binária válida, sinaliza e lê as variaveis do buffer
-                            if ((Byte0 == 0x60) && (Byte1 == 0x45)) {
-                                MsgBinOK = true;
-                                Mensagem.LeEstMedsPayload();
-                                MsgTerm = "Recebida Msg Bin de Atualizacao com " + TamanhoMsg + " Bytes";
-                                Util.Terminal(MsgTerm, false, Verbose);
-                            }
-                            //System.out.println("Mensagem.EstCom1 = " + Mensagem.EstCom1);
-
-                            // Se a mensagem CoAP recebida é válida e se a comunicacao com o programa de atualização
-                            // está OK, monta a mensagem XML com os valores atualizados
-                            if (MsgBinOK) {
-                                if (Mensagem.EstCom1 == 1) {
-                                    MsgXML = Mensagem.XML01(ComRec) + " ";
-                                    //System.out.println(MsgXML);
-                                }
-                                else {  // Se não há comunicacao com o Concentrador, monta a mensagem XML de falha
-                                    Mensagem.XML01Falha(1);
-                                }
-
-                                // Responde com mensagem de XML de comando
-                                String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-                                StrComando = StrComando + "<CMD>" + ComRec + "</CMD>";
-                                Mensagem.EnvString(connect, StrComando, "text/xml", "200", Verbose);
-                                ComRec = "cmd=0000";
+                        // Responde ao Concentrador com uma mensagem de XML de comando
+                        String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+                        StrComando = StrComando + "<CMD>" + ComRec + "</CMD>";
+                        Mensagem.EnvString(connect, StrComando, "text/xml", "200", Verbose);
+                        ComRec = "cmd=0000";
                                 Contador = 0;
-                            }
-                            else {
-                                Util.Terminal("Recebida Mensagem de Atualizacao Invalida", false, Verbose);
-                                String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-                                StrComando = StrComando + "<CMD>MsgInv</CMD>";
-                                Mensagem.EnvString(connect, StrComando, "text/xml", "200", Verbose);
-                            }
-                        } // if (TipoMsg.equals("application/octet-stream"))
-                    } // if ((IdLinha3 == "content-length:") && (IdLinha4 == "content-type:"))
-                }  // if (Requisicao.equals("atualiza"))
+                    }
+                    else {
+                        Util.Terminal("Recebida Mensagem de Atualizacao Invalida", false, Verbose);
+                        String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+                        StrComando = StrComando + "<CMD>MsgInv</CMD>";
+                        Mensagem.EnvString(connect, StrComando, "text/xml", "200", Verbose);
+                    }
+                } // if (CabHTTP.contains("application/octet-stream"))
+            } // if (method.equals("POST") && (ArquivoReq.equals("atualiza"))
 
-                // Verifica se foi recebida mensagem de comando (requisição = "cmd=xxxx")
-                if (ArquivoReq.substring(TamArquReq - 8, TamArquReq - 5).equals("cmd")) {
-                    ComRec = ArquivoReq.substring(TamArquReq - 8, TamArquReq);
-                    RecReqValida = true;
-                    MsgTerm = "Recebida Mensagem de Comando " + ComRec;
-                    Util.Terminal(MsgTerm, false, Verbose);
-                    MsgXML = Mensagem.XML01(ComRec) + " ";        // monta e envia a mensagem XML
-                    Mensagem.EnvString(connect, MsgXML, "text/xml", "200", Verbose);
-                }
-
-            } // if (method.equals("POST"))
+            // Verifica se foi recebida mensagem POST de comando (requisição = "cmd=xxxx")
+            String CabReq = ArquivoReq.substring(TamArquReq - 8, TamArquReq - 5);
+            if (method.equals("POST") && CabReq.equals("cmd")) {
+                RecReqValida = true;
+                ComRec = ArquivoReq.substring(TamArquReq - 8, TamArquReq);
+                MsgTerm = "Recebida Mensagem de Comando " + ComRec;
+                Util.Terminal(MsgTerm, false, Verbose);
+                MsgXML = Mensagem.XML01(ComRec) + " ";
+                Mensagem.EnvString(connect, MsgXML, "text/xml", "200", Verbose);
+            }
 
             if (RecMetodoValido) {    // Se foi recebido um método válido,
                 if (!RecReqValida) {  // e se não está disponível o recurso solicitado pelo método GET ou POST
