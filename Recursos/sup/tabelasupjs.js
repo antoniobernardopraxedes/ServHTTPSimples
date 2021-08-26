@@ -1,24 +1,25 @@
-    //*******************************************************************************************************************
-    //                                                                                                                  *
-    //                                          Programa Principal Javascript                                           *
-    //                                                                                                                  *
-    //*******************************************************************************************************************
+    //******************************************************************************************************************
+    //                                                                                                                 *
+    //                                          Programa Principal Javascript                                          *
+    //                                                                                                                 *
+    //******************************************************************************************************************
     //	  
     ContAtualAuto = 0;
+    ModoComando = "Local";
     loadXMLDoc("local001.xml");
     setInterval(loadXMLDoc, 3000, "local001.xml");
 			
-    //*******************************************************************************************************************
-    //                                                                                                                  *
-    // Nome da Funcao Javascript: loadXMLDoc()                                                                          *
-    //                                                                                                                  *
-    // Função: solicita ao Servidor um Recurso pelo Metodo GET. A resposta do servidor eh sempre o arquivo XML          *
-    //          com o valor atualizado de todas as variaveis de supervisao                                              *
-    //                                                                                                                  *
-    // Entrada: String com o nome do Recurso. Se nao for inserida a string com o nome do recurso (valor = undefined),   *
-    //          solicita apenas a atualizacao dos valores das variaveis.                                                *
-    //                                                                                                                  *
-    //*******************************************************************************************************************
+    //******************************************************************************************************************
+    //                                                                                                                 *
+    // Nome da Funcao Javascript: loadXMLDoc()                                                                         *
+    //                                                                                                                 *
+    // Função: solicita ao Servidor um Recurso pelo Metodo GET. A resposta do servidor eh sempre o arquivo XML         *
+    //          com o valor atualizado de todas as variaveis de supervisao                                             *
+    //                                                                                                                 *
+    // Entrada: String com o nome do Recurso. Se nao for inserida a string com o nome do recurso (valor = undefined),  *
+    //          solicita apenas a atualizacao dos valores das variaveis.                                               *
+    //                                                                                                                 *
+    //******************************************************************************************************************
     //	   
     function loadXMLDoc(recurso) { 
   	 
@@ -125,15 +126,15 @@
     } // Fim da Funcao loadXMLDoc
     
     
-    //*******************************************************************************************************************
-    //                                                                                                                  *
-    // Nome da Funcao Javascript: CarregaVariaveis_GERAL                                                                *
-    //                                                                                                                  *
-    // Função: carrega na tabela HTML as variaveis de supervisao da seção GERAL lidas do arquivo XML                    *
-    //                                                                                                                  *
-    // Entrada: variavel com o arquivo XML recebido do Servidor                                                         *
-    //                                                                                                                  *
-    //*******************************************************************************************************************
+    //******************************************************************************************************************
+    //                                                                                                                 *
+    // Nome da Funcao Javascript: CarregaVariaveis_GERAL                                                               *
+    //                                                                                                                 *
+    // Função: carrega na tabela HTML as variaveis de supervisao da seção GERAL lidas do arquivo XML                   *
+    //                                                                                                                 *
+    // Entrada: variavel com o arquivo XML recebido do Servidor                                                        *
+    //                                                                                                                 *
+    //******************************************************************************************************************
     //	   
     function CarregaVariaveis_GERAL(ArqVarXML) { 
       var i = 0;
@@ -190,15 +191,15 @@
     
     } // Fim da Rotina CarregaVariaveis_GERAL
     
-    //*******************************************************************************************************************
-    //                                                                                                                  *
-    // Nome da Funcao Javascript: CorFonte1                                                                             *
-    //                                                                                                                  *
-    // Função: muda a cor da fonte do texto: Normal: azul ou Alerta: vermelho                                           *
-    //                                                                                                                  *
-    // Entrada: String "Normal" muda o texto para azul. Caso contrário muda o texto para vermelho                       *
-    //                                                                                                                  *
-    //*******************************************************************************************************************
+    //******************************************************************************************************************
+    //                                                                                                                 *
+    // Nome da Funcao Javascript: CorFonte1                                                                            *
+    //                                                                                                                 *
+    // Função: muda a cor da fonte do texto: Normal: azul ou Alerta: vermelho                                          *
+    //                                                                                                                 *
+    // Entrada: String "Normal" muda o texto para azul. Caso contrário muda o texto para vermelho                      *
+    //                                                                                                                 *
+    //******************************************************************************************************************
     //
     function CorFonte1(val) {
     
@@ -211,15 +212,15 @@
     }
     
     
-    //*******************************************************************************************************************
-    //                                                                                                                  *
-    // Nome da Funcao Javascript: CarregaVariaveis_AGUA                                                                 *
-    //                                                                                                                  *
-    // Função: carrega na tabela HTML as variaveis de supervisao da seção AGUA lidas do arquivo XML                     *
-    //                                                                                                                  *
-    // Entrada: variavel com o arquivo XML recebido do Servidor                                                         *
-    //                                                                                                                  *
-    //*******************************************************************************************************************
+    //******************************************************************************************************************
+    //                                                                                                                 *
+    // Nome da Funcao Javascript: CarregaVariaveis_AGUA                                                                *
+    //                                                                                                                 *
+    // Função: carrega na tabela HTML as variaveis de supervisao da seção AGUA lidas do arquivo XML                    *
+    //                                                                                                                 *
+    // Entrada: variavel com o arquivo XML recebido do Servidor                                                        *
+    //                                                                                                                 *
+    //******************************************************************************************************************
     //	   
     function CarregaVariaveis_AGUA(ArqVarXML) { 
       var i = 0;
@@ -242,15 +243,15 @@
     } // Fim da Rotina CarregaVariaveis_AGUA
 
 
-    //*******************************************************************************************************************
-    //                                                                                                                  *
-    // Nome da Funcao Javascript: CarregaVariaveis_GERCONS                                                              *
-    //                                                                                                                  *
-    // Função: carrega na tabela HTML as variaveis de supervisao da seção GERCONS lidas do arquivo XML                  *
-    //                                                                                                                  *
-    // Entrada: variavel com o arquivo XML recebido do Servidor                                                         *
-    //                                                                                                                  *
-    //*******************************************************************************************************************
+    //******************************************************************************************************************
+    //                                                                                                                 *
+    // Nome da Funcao Javascript: CarregaVariaveis_GERCONS                                                             *
+    //                                                                                                                 *
+    // Função: carrega na tabela HTML as variaveis de supervisao da seção GERCONS lidas do arquivo XML                 *
+    //                                                                                                                 *
+    // Entrada: variavel com o arquivo XML recebido do Servidor                                                        *
+    //                                                                                                                 *
+    //******************************************************************************************************************
     //	   
     function CarregaVariaveis_GERCONS(ArqVarXML) { 
       var i = 0;
@@ -301,15 +302,15 @@
     } // Fim da Rotina CarregaVariaveis_GERCONS
     
     
-    //*******************************************************************************************************************
-    //                                                                                                                  *
-    // Nome da Funcao Javascript: CarregaVariaveis_INV                                                                  *
-    //                                                                                                                  *
-    // Função: carrega na tabela HTML as variaveis de supervisao da seção INV lidas do arquivo XML                      *
-    //                                                                                                                  *
-    // Entrada: variavel com o arquivo XML recebido do Servidor                                                         *
-    //                                                                                                                  *
-    //*******************************************************************************************************************
+    //******************************************************************************************************************
+    //                                                                                                                 *
+    // Nome da Funcao Javascript: CarregaVariaveis_INV                                                                 *
+    //                                                                                                                 *
+    // Função: carrega na tabela HTML as variaveis de supervisao da seção INV lidas do arquivo XML                     *
+    //                                                                                                                 *
+    // Entrada: variavel com o arquivo XML recebido do Servidor                                                        *
+    //                                                                                                                 *
+    //******************************************************************************************************************
     //	   
     function CarregaVariaveis_INV(ArqVarXML) {
       var i = 0;

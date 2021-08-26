@@ -26,8 +26,7 @@ public class Mensagem {
     // Variáveis do Programa
     static boolean flagFim = false;
     static int Comando = 1;
-    static String ComRecHTTP;
-    //static boolean verbose;
+    //static String ComRecHTTP;
     static boolean PrtMsg;
 
     static int[] receiveData1 = new int[512];
@@ -226,7 +225,7 @@ public class Mensagem {
     //	                                                                                                               *
     //******************************************************************************************************************
     //
-    public static String XML01() {
+    public static String XML01(String ComRec) {
 
         // Estados de Comunicacao
         StrEstCom1 = "Falha";
@@ -476,7 +475,7 @@ public class Mensagem {
         MsgXMLArray[IdNv0][IdNv1][7][0] = "DATA";
         MsgXMLArray[IdNv0][IdNv1][7][1] = Util.ImpData(Dia, Mes, Ano);
         MsgXMLArray[IdNv0][IdNv1][8][0] = "CMDEX";
-        MsgXMLArray[IdNv0][IdNv1][8][1] = ComRecHTTP;
+        MsgXMLArray[IdNv0][IdNv1][8][1] = ComRec;
         MsgXMLArray[IdNv0][IdNv1][9][0] = "MDOP";
         MsgXMLArray[IdNv0][IdNv1][9][1] = StrMdOp;
         MsgXMLArray[IdNv0][IdNv1][10][0] = "MDCOM";
@@ -1028,10 +1027,8 @@ public class Mensagem {
     public static void IniciaVarGlobais() {
 
         // Inicia as Variaveis Globais
-        ComRecHTTP = "     ";
         flagFim = false;
         Comando = 1;
-        ComRecHTTP = "";
         Icarga3 = 0;                  // Corrente Carga 3 (Geladeira)
         VRede = 0;                    // Tensão da Rede
         VBat = 0;                     // Tensão do Banco de Baterias
@@ -1202,8 +1199,9 @@ public class Mensagem {
             out.print(Msg);
             out.flush();
 
-            Util.Terminal("Enviada Mensagem HTTP do tipo " + Tipo + " com " + TamMsg + " Caracteres", false, Verbose);
-
+            String MsgTerm = "Enviada Mensagem HTTP do tipo " + Tipo + " com " + TamMsg + " Caracteres";
+            Util.Terminal(MsgTerm, false, Verbose);
+            System.out.println(Msg);
             return(true);
         }
         catch (IOException ioe) {

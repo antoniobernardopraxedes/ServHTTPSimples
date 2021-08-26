@@ -36,6 +36,7 @@ public class Main implements Runnable {
     static String Caminho = "";
     static String MsgXML = "";
     private Socket connect;
+    private static String ComRec;
 
     public Main(Socket c) {
         connect = c;
@@ -52,6 +53,8 @@ public class Main implements Runnable {
     public static void main(String[] args) {
         Mensagem.IniciaVarGlobais();
         Mensagem.PrtMsg = false;
+        ComRec = "cmd=0000";
+
         MsgXML = Mensagem.XML01Falha(0);
 
         try {
@@ -71,7 +74,8 @@ public class Main implements Runnable {
                 }
             }
 
-            Util.Terminal("Servidor Iniciado no Computador " + NomeComputador, true, true);
+            String MsgTrm = "Servidor Iniciado no Computador " + NomeComputador + " - Caminho: " + Caminho;
+            Util.Terminal(MsgTrm, true, true);
             Util.Terminal("Esperando por Conexoes na Porta: " + Porta, false, Verbose);
 
             do {    // Espera a conexão do cliente
@@ -161,14 +165,17 @@ public class Main implements Runnable {
             StringTokenizer parseLinha1 = new StringTokenizer(LinhaCab[0]);
             String method = parseLinha1.nextToken().toUpperCase();
             String ArquivoReq = "";
+            int TamArquReq = 0;
 
             if (parseLinha1.hasMoreTokens()) {;
                 Requisicao = parseLinha1.nextToken();
                 ArquivoReq = Requisicao.substring(1);
+                TamArquReq = ArquivoReq.length();
             }
 
             int TamArqReq = ArquivoReq.length();
             String ArqReq = "";
+            String MsgTerm = "";
 
             boolean RecMetodoValido = false;
             boolean RecReqValida = false;
@@ -186,6 +193,7 @@ public class Main implements Runnable {
                     // Trata requisições de arquivos texto de página HTML
                     if (ArquivoReq.endsWith(".html")) {
 
+                        //Se a requisição for feita de um dispositivo móvel, usa o nome de arquivo com .m
                         if (mobile) {
                             ArqReq = ArquivoReq.substring(0, TamArqReq - 5);
                             ArqReq = ArqReq + ".m.html";
@@ -233,7 +241,8 @@ public class Main implements Runnable {
                             Mensagem.EnvString(connect, MsgXML, "text/xml", "200", Verbose);
                         }
                         else {
-                            Mensagem.EnvString(connect, Mensagem.XML01Falha(0), "text/xml", "200", Verbose);
+                            String MsgFalha = Mensagem.XML01Falha(0);
+                            Mensagem.EnvString(connect, MsgFalha, "text/xml", "200", Verbose);
                         }
                     }
                 } // else if (Requisicao.equals("/") || Requisicao.equals("/?")) {
@@ -241,12 +250,14 @@ public class Main implements Runnable {
 
             if (method.equals("POST")) {              // Se método = POST,
                 RecMetodoValido = true;
-                if (ArquivoReq.equals("atualiza")) {  // e requisição = "atualiza", indica mensagem binária de atualização
+
+                // Verifica se foi recebida mensagem binária de atualização (requisição = "atualiza")
+                if (ArquivoReq.equals("atualiza")) {
                     RecReqValida = true;
 
-                    String TamMsg = "";       // TamMsg = string com o número de caracteres/bytes da mensagem
-                    String TipoMsg = "";      // TipoMsg = string com o tipo da mensagem (XML ou octet/stream"
-                    int TamanhoMsg = 0;       // TamanhoMensagem = inteiro com o número de caracteres/bytes da mensagem
+                    String TamMsg = "";     // TamMsg = string com o número de caracteres/bytes da mensagem
+                    String TipoMsg = "";    // TipoMsg = string com o tipo da mensagem (XML ou octet/stream"
+                    int TamanhoMsg = 0;     // TamanhoMensagem = inteiro com o número de caracteres/bytes da mensagem
                     StringTokenizer parseLinha3 = new StringTokenizer(LinhaCab[2]); // Linha 3
                     String IdLinha3 =  parseLinha3.nextToken().toLowerCase();       // IdLinha3 minúsculo deve ser "Content-Length:"
                     StringTokenizer parseLinha4 = new StringTokenizer(LinhaCab[3]); // Linha 4
@@ -257,34 +268,40 @@ public class Main implements Runnable {
                         TamanhoMsg = Util.StringToInt(TamMsg);
                         TipoMsg = parseLinha4.nextToken().toLowerCase();
 
-                        if (TipoMsg.equals("application/octet-stream")) {  // Se é mensagem do tipo binária
-
+                        // Se é mensagem do tipo application/octet-stream, recebe os bytes e carrega no buffer
+                        if (TipoMsg.equals("application/octet-stream")) {
                             for (int i = 0; i < TamanhoMsg; i++){
-                                Mensagem.receiveData1[i] = ByteIn.read();    // Recebe os bytes e carrega no buffer
+                                Mensagem.receiveData1[i] = ByteIn.read();
                             }
-
                             int Byte0 = Mensagem.receiveData1[0];
                             int Byte1 = Mensagem.receiveData1[1];
                             boolean MsgBinOK = false;
-                            if ((Byte0 == 0x60) && (Byte1 == 0x45)) {  // Se recebeu mensagem CoAP válida,
-                                Mensagem.LeEstMedsPayload();             // le as variaveis
+
+                            // Se recebeu mensagem binária válida, sinaliza e lê as variaveis do buffer
+                            if ((Byte0 == 0x60) && (Byte1 == 0x45)) {
                                 MsgBinOK = true;
+                                Mensagem.LeEstMedsPayload();
+                                MsgTerm = "Recebida Msg Bin de Atualizacao com " + TamanhoMsg + " Bytes";
+                                Util.Terminal(MsgTerm, false, Verbose);
                             }
-                            if (MsgBinOK) {                         // Se a mensagem CoAP recebida é válida,
-                                if (Mensagem.EstCom1 == 1) {   		// e se a comunicacao com o programa de atualização está OK,
-                                    MsgXML = Mensagem.XML01();        // monta a mensagem XML
-                                    MsgXML = MsgXML + " ";
+                            //System.out.println("Mensagem.EstCom1 = " + Mensagem.EstCom1);
+
+                            // Se a mensagem CoAP recebida é válida e se a comunicacao com o programa de atualização
+                            // está OK, monta a mensagem XML com os valores atualizados
+                            if (MsgBinOK) {
+                                if (Mensagem.EstCom1 == 1) {
+                                    MsgXML = Mensagem.XML01(ComRec) + " ";
+                                    //System.out.println(MsgXML);
                                 }
-                                else {                        		// Se a comunicacao com o programa de atualização está em falha,
-                                    Mensagem.XML01Falha(1);     		// monta a mensagem XML de falha
+                                else {  // Se não há comunicacao com o Concentrador, monta a mensagem XML de falha
+                                    Mensagem.XML01Falha(1);
                                 }
-                                Util.Terminal("Recebida Mensagem Binária de Atualizacao com " + TamanhoMsg + " Bytes", false, Verbose);
 
                                 // Responde com mensagem de XML de comando
                                 String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-                                StrComando = StrComando + "<CMD></CMD>";
-                                //EnvMsgStringTxt(StrComando, "text/xml", "200");
+                                StrComando = StrComando + "<CMD>" + ComRec + "</CMD>";
                                 Mensagem.EnvString(connect, StrComando, "text/xml", "200", Verbose);
+                                ComRec = "cmd=0000";
                                 Contador = 0;
                             }
                             else {
@@ -296,6 +313,17 @@ public class Main implements Runnable {
                         } // if (TipoMsg.equals("application/octet-stream"))
                     } // if ((IdLinha3 == "content-length:") && (IdLinha4 == "content-type:"))
                 }  // if (Requisicao.equals("atualiza"))
+
+                // Verifica se foi recebida mensagem de comando (requisição = "cmd=xxxx")
+                if (ArquivoReq.substring(TamArquReq - 8, TamArquReq - 5).equals("cmd")) {
+                    ComRec = ArquivoReq.substring(TamArquReq - 8, TamArquReq);
+                    RecReqValida = true;
+                    MsgTerm = "Recebida Mensagem de Comando " + ComRec;
+                    Util.Terminal(MsgTerm, false, Verbose);
+                    MsgXML = Mensagem.XML01(ComRec) + " ";        // monta e envia a mensagem XML
+                    Mensagem.EnvString(connect, MsgXML, "text/xml", "200", Verbose);
+                }
+
             } // if (method.equals("POST"))
 
             if (RecMetodoValido) {    // Se foi recebido um método válido,
