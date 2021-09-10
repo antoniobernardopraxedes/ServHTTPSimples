@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 //*********************************************************************************************************************
@@ -81,13 +82,13 @@ public class SrvHTTPMain implements Runnable {
     } // Fim da Rotina public static void main(String[] args) {
 
 
-    //***************************************************************************************************************************
-    //                                                                                                                          *
-    // Processa a Solicitação do Cliente                                                                                        *
-    //                                                                                                                          *
-    // Funcao: processa a solicitação do Cliente HTTP                                                                           *
-    //                                                                                                                          *
-    //***************************************************************************************************************************
+    //******************************************************************************************************************
+    //                                                                                                                 *
+    // Processa a Solicitação do Cliente                                                                               *
+    //                                                                                                                 *
+    // Funcao: processa a solicitação do Cliente HTTP                                                                  *
+    //                                                                                                                 *
+    //******************************************************************************************************************
     //
     @Override
     public void run() {
@@ -129,6 +130,7 @@ public class SrvHTTPMain implements Runnable {
                             CLin = CLin + 1;
                             LinhaCab[CLin] = "";
                             Leu_CRLF = true;
+
                         }
                     }
                 }
@@ -142,10 +144,10 @@ public class SrvHTTPMain implements Runnable {
             String CabHTTP = "";
             for (int k = 0; k < CLin; k++){
                 CabHTTP = CabHTTP + LinhaCab[k] + "\n";
-                //System.out.println("k = " + k + " - Linha: " + LinhaCab[k]);
             }
+            //System.out.println(CabHTTP);
 
-            if (CabHTTP.toLowerCase().indexOf("mobile") >= 0) {
+            if (CabHTTP.toLowerCase().contains("mobile")) {
                 mobile = true;
                 System.out.println("Acesso por Dispositivo Móvel");
                 Util.Terminal("Acesso por Dispositivo Móvel", false, Verbose);
@@ -166,8 +168,6 @@ public class SrvHTTPMain implements Runnable {
             boolean RecMetodoValido = false;
             boolean RecReqValida = false;
             Util.Terminal("Método: " + method + "  -  Arquivo Requisitado: " + ArquivoReq, false, Verbose);
-
-            //Mensagem Msg = new Mensagem();
 
             if (method.equals("GET")) {  // Trata o método GET
                 RecMetodoValido = true;
@@ -228,6 +228,7 @@ public class SrvHTTPMain implements Runnable {
                         if (Contador < 8) {
                             if (Mensagem.getEstCom1()) {
                                 EnvRecMsg.EnvString(connect, Mensagem.MontaXML(), "text/xml", "200", Verbose);
+                                //System.out.println(Mensagem.getMsgXML());
                             }
                             else {
                                 EnvRecMsg.EnvString(connect, Mensagem.MontaXMLFalha(1), "text/xml", "200", Verbose);
@@ -237,51 +238,80 @@ public class SrvHTTPMain implements Runnable {
                             EnvRecMsg.EnvString(connect, Mensagem.MontaXMLFalha(0), "text/xml", "200", Verbose);
                         }
                     }
-                } // else if (Requisicao.equals("/") || Requisicao.equals("/?")) {
-            }  // if (method.equals("GET"))
+                }
+            }
 
             if (method.equals("POST")) {              // Se método = POST,
                 RecMetodoValido = true;
-                if (ArquivoReq.equals("atualiza")) {  // e requisição = "atualiza", indica mensagem binária de atualização
+                if (ArquivoReq.equals("atualiza")) {  // e requisição = "atualiza", indica mensagem de atualização
                     RecReqValida = true;
 
-                    String TamMsg = "";       // TamMsg = string com o número de caracteres/bytes da mensagem
-                    String TipoMsg = "";      // TipoMsg = string com o tipo da mensagem (XML ou octet/stream"
-                    int TamanhoMsg = 0;       // TamanhoMensagem = inteiro com o número de caracteres/bytes da mensagem
-                    StringTokenizer parseLinha3 = new StringTokenizer(LinhaCab[2]); // Linha 3
-                    String IdLinha3 =  parseLinha3.nextToken().toLowerCase();       // IdLinha3 minúsculo deve ser "Content-Length:"
-                    StringTokenizer parseLinha4 = new StringTokenizer(LinhaCab[3]); // Linha 4
-                    String IdLinha4 = parseLinha4.nextToken().toLowerCase();        // IdLinha4 minúsculo deve ser "Content-Type:"
+                    String TamMsg = "";     // TamMsg = string com o número de caracteres/bytes da mensagem
+                    String TipoMsg = "";    // TipoMsg = string com o tipo da mensagem (XML ou octet/stream"
+                    int TamanhoMsg = 0;     // TamanhoMensagem = inteiro com o número de caracteres/bytes da mensagem
 
-                    if (IdLinha3.equals("content-length:") && IdLinha4.equals("content-type:")) {
-                        TamMsg = parseLinha3.nextToken();
-                        TamanhoMsg = Util.StringToInt(TamMsg);
-                        TipoMsg = parseLinha4.nextToken().toLowerCase();
+                    String token1 = "content-length:";
+                    String token2 = "content-type:";
+                    int Indice1 = CabHTTP.toLowerCase(Locale.ROOT).lastIndexOf(token1);
+                    int Indice2 = CabHTTP.toLowerCase(Locale.ROOT).lastIndexOf(token2);
+                    Indice1 = Indice1 + token1.length();
+                    Indice2 = Indice2 + token2.length();
+                    int IndiceF = CabHTTP.length() - 1;
 
-                        if (TipoMsg.equals("application/octet-stream")) {  // Se é mensagem do tipo binária
+                    String Substring1 = CabHTTP.substring(Indice1, Indice1 + 5);
+                    StringTokenizer parseLength = new StringTokenizer(Substring1);
+                    StringTokenizer parseType = new StringTokenizer(CabHTTP.substring(Indice2, IndiceF));
+                    TamMsg = parseLength.nextToken();
+                    TamanhoMsg = Util.StringToInt(TamMsg);
+                    TipoMsg = parseType.nextToken();
 
-                            byte[] MsgBin = new byte[TamanhoMsg];
-                            ByteIn.read(MsgBin);                   // Recebe os bytes e carrega no buffer
+                    System.out.println("Tipo: " + TipoMsg + " - Tamanho: " + TamMsg);
 
-                            if ((MsgBin[0] == 0x60) && (MsgBin[1] == 0x45)) {  // Se recebeu mensagem CoAP válida,
-                                Mensagem.CarregaVariaveis(MsgBin);
+                    if (TipoMsg.equals("application/octet-stream")) {  // Se é mensagem do tipo binária
 
-                                Util.Terminal("Recebida Mensagem Binária de Atualizacao com " + TamanhoMsg + " Bytes", false, Verbose);
+                        byte[] MsgBin = new byte[TamanhoMsg];
+                        ByteIn.read(MsgBin);                   // Recebe os bytes e carrega no buffer
 
-                                // Responde com mensagem de XML de comando
-                                String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-                                StrComando = StrComando + "<CMD></CMD>";
-                                EnvRecMsg.EnvString(connect, StrComando, "text/xml", "200", Verbose);
-                                Contador = 0;
-                            }
-                            else {
-                                Util.Terminal("Recebida Mensagem de Atualizacao Invalida", false, Verbose);
-                                String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-                                StrComando = StrComando + "<CMD>MsgInv</CMD>";
-                                EnvRecMsg.EnvString(connect, StrComando, "text/xml", "200", Verbose);
-                            }
-                        } // if (TipoMsg.equals("application/octet-stream"))
-                    } // if ((IdLinha3 == "content-length:") && (IdLinha4 == "content-type:"))
+                        if ((MsgBin[0] == 0x60) && (MsgBin[1] == 0x45)) {  // Se recebeu mensagem CoAP válida,
+                            Mensagem.CarregaVariaveis(MsgBin);
+
+                            Util.Terminal("Recebida Mensagem Binária de Atualizacao com " + TamanhoMsg
+                                           + " Bytes", false, Verbose);
+
+                            // Responde com mensagem de XML de comando
+                            String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+                            StrComando = StrComando + "<CMD></CMD>";
+                            EnvRecMsg.EnvString(connect, StrComando, "text/xml", "200", Verbose);
+                            Contador = 0;
+                        }
+                        else {
+                            Util.Terminal("Recebida Mensagem de Atualizacao Invalida", false, Verbose);
+                            String StrComando = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+                            StrComando = StrComando + "<CMD>MsgInv</CMD>";
+                            EnvRecMsg.EnvString(connect, StrComando, "text/xml", "200", Verbose);
+                        }
+                    }
+
+                    if (TipoMsg.equals("text/json")) {  // Se é mensagem do tipo Json
+
+                        int CharRec;
+                        String MsgJson = "";
+                        for (short i = 0; i < TamanhoMsg; i++) {
+                            CharRec = dataIn.read();
+                            MsgJson = MsgJson + (char)CharRec;
+                        }
+                        Util.Terminal("Recebida Mensagem Json de Atualizacao com " + TamanhoMsg
+                                        + " Bytes", false, Verbose);
+
+                        System.out.println(MsgJson);
+
+                        // Responde com mensagem Json de comando
+                        String cmd = "ack";
+                        String StrComando = "{ \"comando\" : " + "\"" + cmd + "\" }" ;
+                        EnvRecMsg.EnvString(connect, StrComando, "text/json", "200", Verbose);
+                        Contador = 0;
+
+                    }
                 }  // if (Requisicao.equals("atualiza"))
             } // if (method.equals("POST"))
 

@@ -154,6 +154,9 @@ public class Mensagem {
     private static int SDIv1;             // Saúde do Inversor 1
     private static int EstrIv1;           // Estresse do Inversor 1
 
+    public static String getMsgXML() {
+        return MsgXML;
+    }
 
     public static boolean getEstCom1() {
         return EstCom1;
