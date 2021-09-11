@@ -145,11 +145,10 @@ public class SrvHTTPMain implements Runnable {
             for (int k = 0; k < CLin; k++){
                 CabHTTP = CabHTTP + LinhaCab[k] + "\n";
             }
-            //System.out.println(CabHTTP);
+            System.out.println(CabHTTP);
 
             if (CabHTTP.toLowerCase().contains("mobile")) {
                 mobile = true;
-                System.out.println("Acesso por Dispositivo Móvel");
                 Util.Terminal("Acesso por Dispositivo Móvel", false, Verbose);
             }
 
